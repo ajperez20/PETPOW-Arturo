@@ -1,14 +1,14 @@
 var express = require('express');
 var router = express.Router();
+var data = require('../public/javascripts/SeverFetch')
+
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get('/', function (req, res, next) {
+  data()
+    .then(jsonData => {
+      res.render('index', { data: jsonData });
+    })
 });
-
-router.get('/arturo', function(req, res, next) {
-  res.render('arturo', { title: 'Express' });
-});
-
 
 module.exports = router;

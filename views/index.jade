@@ -1,5 +1,8 @@
 extends layout
 
 block content
-  h1= "Arturo"
-  p Welcome to #{title}
+  h1= "Arturo Es Un Genio"
+  p Este es el contenido del json = #{data.word}
+  form(method="get" action="/users")
+            button(type="submit") run foo
+

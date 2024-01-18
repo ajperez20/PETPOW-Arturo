@@ -4,9 +4,11 @@
  * Module dependencies.
  */
 
+const req = require('express/lib/request');
 var app = require('../app');
 var debug = require('debug')('petpow-arturo:server');
 var http = require('http');
+const res = require('express/lib/response');
 
 /**
  * Get port from environment and store in Express.
@@ -14,7 +16,6 @@ var http = require('http');
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
-
 /**
  * Create HTTP server.
  */
