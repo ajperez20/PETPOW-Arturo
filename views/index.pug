@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  .container
+    pre
+      |   _    _                                         
+      |  | |  | |                                        
+      |  | |__| | __ _ _ __   __ _ _ __ ___   __ _ _ __  
+      |  |  __  |/ _` | '_ \\ / _` | '_ ` _ \\ / _` | '_ \\
+      |  | |  | | (_| | | | | (_| | | | | | | (_| | | | |
+      |  |_|  |_|\\__,_|_| |_|\\__, |_| |_| |_|\\__,_|_| |_|
+      |                       __/ |                      
+      |                      |___/                       
+
+    h1 Bienvenido al Juego del Ahorcado
+    p ¡Hola! Bienvenido al Juego del Ahorcado. ¿Estás listo para jugar?
+    form(action="/users/game" method="get")
+      button.btn.btn-primary(type="submit") Jugar
+
+  
+
