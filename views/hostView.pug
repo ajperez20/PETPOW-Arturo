@@ -1,0 +1,14 @@
+extends layout 
+
+block content
+    body.Stilebody
+        //-*NavBar
+        nav(class="navbar navbar-expand-md " style="Background-color: #66BD9A ")
+            div(class="container-fluid justify-content-center aling-items-center")
+                a(class="navbar-brand" href="https://www.youtube.com/watch?v=sbTVZMJ9Z2I&list=RDBV7RkEL6oRc&index=2" target="_blank") 
+                    img(src="images/Horca.svg" alt="Logo" width="50" height="40" class="d-inline-block align-text-top")
+
+        section.sectionCreate
+            div.contenedor
+                h2.seccion-titulo Crear Partida De HangmanGame
+                <a class="btn btn-secondary btn-lg" href="/users/iniciarPartida" role="button">Crear Partida</a>

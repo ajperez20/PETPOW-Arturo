@@ -9,6 +9,17 @@ router.get('/', function (req, res, next) {
   res.send('respond with a resource');
 });
 
+
+//*Esta es la página a donde te dirige el crear partida de hostView
+router.get('/iniciarPartida', function (req, res, next) {
+  res.render('index')
+});
+
+
+
+
+
+
 router.get('/game', function (req, res, next) {
   data()
     .then(jsonData => {
