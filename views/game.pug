@@ -22,7 +22,7 @@ block content
         br
         form(id="form" method="get")
             label(for="letra" class="form-label") Introduzca una letra
-            input(type="text" id="letra" name="letra" class="form-control" )
+            input(type="text" id="letra" name="letra" class="form-control" autocomplete="off")
             button(type="button" class="btn btn-primary m-2" onclick='myFunction(' + '"' + originalWord + '"' + ',' + '"' + newWord + '"' + ')' ) Enviar
             
         script.
