@@ -1,8 +1,11 @@
 extends layout
 
 block content
-    
+    - var originalWord = originalWord
+    - var newWord = newWord
+    - var lives = lives
     .container.align-items-center
+        h3 Vidas Disponibles: #{lives}
         pre
             |   _    _                                         
             |  | |  | |                                        
@@ -12,25 +15,26 @@ block content
             |  |_|  |_|\\__,_|_| |_|\\__, |_| |_| |_|\\__,_|_| |_|
             |                       __/ |                      
             |                      |___/                       
-
-       
-        - var originalWord = originalWord
-        - var newWord = newWord
-        h1= originalWord
+        h4= originalWord
         h1= newWord
         br
         br
         form(id="form" method="get")
             label(for="letra" class="form-label") Introduzca una letra
             input(type="text" id="letra" name="letra" class="form-control" autocomplete="off")
-            button(type="button" class="btn btn-primary m-2" onclick='myFunction(' + '"' + originalWord + '"' + ',' + '"' + newWord + '"' + ')' ) Enviar
+            button(type="button" class="btn btn-primary m-2" onclick='myFunction(' + '"' + originalWord + '"' + ',' + '"' + newWord + '"' + ' ,' + '"' + lives + '"' + ')' ) Enviar
             
         script.
-            function myFunction(originalWord, newWord){
+            function myFunction(originalWord, newWord, lives){
                 console.log(newWord)
                 const inputText = document.getElementById("letra");
                 letter = inputText.value;
-                let formulario = document.getElementById('form');
-                formulario.action = "/users/game/" + originalWord + "/" + letter + "/" + newWord;
-                formulario.submit();
+                if(letter != ""){
+                    let formulario = document.getElementById('form');
+                    formulario.action = "/users/game/" + originalWord + "/" + letter + "/" + newWord + "/" + lives;
+                    formulario.submit();
+                }else{
+                    alert("Introduce Una Letra");
+                }
+
             }
