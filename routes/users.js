@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var data = require('../public/javascripts/SeverFetch');
+
 var changeLetter = require('../public/javascripts/ChangeLetter');
 
 /**

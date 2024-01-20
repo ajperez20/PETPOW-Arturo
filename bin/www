@@ -8,10 +8,12 @@ const req = require('express/lib/request');
 var app = require('../app');
 var debug = require('debug')('petpow-arturo:server');
 var http = require('http');
-var socketIo = require('socket.io');
 const res = require('express/lib/response');
 const { connect } = require('http2');
-
+const { v4: uuidv4 } = require('uuid');
+var { data: data, getWord: getWord } = require('../public/javascripts/SeverFetch');
+var socketIo = require('socket.io');
+const { hideWord: hideWord } = require('../public/javascripts/DataManagemente');
 
 
 /**
@@ -31,29 +33,65 @@ var server = http.createServer(app);
  * Create Socket Io server
  */
 
-const render = (data) => {
-  const html = `
-            <section class="hero align-items-stretch">
-              <div class=" d-flex flex-column justify-content-center align-items-center mt-5 mb-5">
-                <img src="/images/logoGame.png" width="300" heigth="100" alt="Algo">
-              </div>
-              <div class="d-flex flex-column justify-content-center align-items-center">
-                <h1>Bienvenido al Juego del Ahorcado</h1>
-                <p>¡Hola! Bienvenido al Juego del Ahorcado. ¿Estás listo para jugar?</p>
-                <a class="btn btn-secondary btn-lg" href="/users/game" role="button">Iniciar Partida</a>
-              </div>
-            </section>
-`;
-  return html
+/**
+ * Creamos la estructura del backend que queremos
+ */
+
+//Datos para el cliente
+
+var wordArray;
+
+const renderGameStart = () => {
+
+  return getWord().then(data => {
+    return `
+    <section class="hero align-items-stretch">
+      <div class=" d-flex flex-column justify-content-center align-items-center mt-5 mb-5">
+        <img src="/images/logoGame.png" width="300" heigth="100" alt="Algo">
+      </div>
+      <div class="d-flex flex-column justify-content-center align-items-center">
+        <h1>${data.word}</h1>
+        <h1>5</h1>
+      </div>
+    </section>
+`
+  });
 }
 
-const skio = new socketIo.Server(server);
-skio.on('connection', (socket) => {
-  socket.on('render', (data) => {
-    var html = render(data);
-    socket.emit('html', html);
+//Server Socket.io
+const serverBackend = new socketIo.Server(server);
+serverBackend.on('connection', (socket) => {
+  socket.on('render', () => {
+    var html = renderGameStart();
+    html.then(data=> socket.emit('html',data))
+   ;
   })
 })
+
+//---------------------------------------------------
+// const render = (data) => {
+//   const html = `
+//             <section class="hero align-items-stretch">
+//               <div class=" d-flex flex-column justify-content-center align-items-center mt-5 mb-5">
+//                 <img src="/images/logoGame.png" width="300" heigth="100" alt="Algo">
+//               </div>
+//               <div class="d-flex flex-column justify-content-center align-items-center">
+//                 <h1>Bienvenido al Juego del Ahorcado</h1>
+//                 <p>¡Hola! Bienvenido al Juego del Ahorcado. ¿Estás listo para jugar?</p>
+//                 <a class="btn btn-secondary btn-lg" href="/users/game" role="button">Iniciar Partida</a>
+//               </div>
+//             </section>
+// `;
+//   return html
+// }
+
+// const skio = new socketIo.Server(server);
+// skio.on('connection', (socket) => {
+//   socket.on('render', (data) => {
+//     var html = render(data);
+//     socket.emit('html', html);
+//   })
+// })
 
 /**
  * Listen on provided port, on all network interfaces.
