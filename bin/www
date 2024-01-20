@@ -8,7 +8,7 @@ const req = require('express/lib/request');
 var app = require('../app');
 var debug = require('debug')('petpow-arturo:server');
 var http = require('http');
-// var socketIo = require('socket.io');
+var socketIo = require('socket.io');
 const res = require('express/lib/response');
 const { connect } = require('http2');
 
@@ -31,18 +31,29 @@ var server = http.createServer(app);
  * Create Socket Io server
  */
 
-// const skio = new socketIo.Server(server);
-// skio.on('connection', (socket) => {
-//   var sendDataGame;
-//   console.log('Nueva conexión: ', socket.id);
+const render = (data) => {
+  const html = `
+            <section class="hero align-items-stretch">
+              <div class=" d-flex flex-column justify-content-center align-items-center mt-5 mb-5">
+                <img src="/images/logoGame.png" width="300" heigth="100" alt="Algo">
+              </div>
+              <div class="d-flex flex-column justify-content-center align-items-center">
+                <h1>Bienvenido al Juego del Ahorcado</h1>
+                <p>¡Hola! Bienvenido al Juego del Ahorcado. ¿Estás listo para jugar?</p>
+                <a class="btn btn-secondary btn-lg" href="/users/game" role="button">Iniciar Partida</a>
+              </div>
+            </section>
+`;
+  return html
+}
 
-
-  
-//   socket.on('client:newWord', (data) => {
-//     sendDataGame = changeLetter(data.originalW, data.letter, data.newW, parseInt(data.lives));
-//     socket.emit('server:newWord', sendDataGame);
-//   });
-// })
+const skio = new socketIo.Server(server);
+skio.on('connection', (socket) => {
+  socket.on('render', (data) => {
+    var html = render(data);
+    socket.emit('html', html);
+  })
+})
 
 /**
  * Listen on provided port, on all network interfaces.
