@@ -8,7 +8,11 @@ const req = require('express/lib/request');
 var app = require('../app');
 var debug = require('debug')('petpow-arturo:server');
 var http = require('http');
+// var socketIo = require('socket.io');
 const res = require('express/lib/response');
+const { connect } = require('http2');
+
+
 
 /**
  * Get port from environment and store in Express.
@@ -21,6 +25,24 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+
+
+/**
+ * Create Socket Io server
+ */
+
+// const skio = new socketIo.Server(server);
+// skio.on('connection', (socket) => {
+//   var sendDataGame;
+//   console.log('Nueva conexión: ', socket.id);
+
+
+  
+//   socket.on('client:newWord', (data) => {
+//     sendDataGame = changeLetter(data.originalW, data.letter, data.newW, parseInt(data.lives));
+//     socket.emit('server:newWord', sendDataGame);
+//   });
+// })
 
 /**
  * Listen on provided port, on all network interfaces.

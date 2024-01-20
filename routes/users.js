@@ -1,53 +1,45 @@
 var express = require('express');
 var router = express.Router();
-var data = require('../public/javascripts/SeverFetch')
-var changeLetter = require('../public/javascripts/ChangeLetter')
+var data = require('../public/javascripts/SeverFetch');
+var changeLetter = require('../public/javascripts/ChangeLetter');
 
-
-/* GET users listing. */
-router.get('/', function (req, res, next) {
-  res.send('respond with a resource');
-});
-
-
-//*Esta es la página a donde te dirige el crear partida de hostView
-router.get('/iniciarPartida', function (req, res, next) {
-  res.render('index')
-});
-
-
-
-
-
-
+/**
+ * 
+ * Se renderiza el tablero de juego, pasando a su vez las variables locales 
+ * generatedWord, hiddenWord y playerLives que contienen la información que será 
+ * mostrada en la vista del tablero de juego 'game'
+ */
 router.get('/game', function (req, res, next) {
   data()
     .then(jsonData => {
-      res.render('game', { originalWord: jsonData.word, newWord: "_ ".repeat(jsonData.word.length), lives: 5 });
+      generatedWord = jsonData.word;
+      hiddenWord = "_ ".repeat(jsonData.word.length);
+      res.render('game', { generatedWord: jsonData.word, hiddenWord: hiddenWord, playerLives: 5 });
     })
+
 });
 
 
-/*
-*This Route manages get requests made
-*by sending the letter that is believed to be correct
-*In addition to this, it is inserting the letters in a
-*new variable 
-*/
+/**
+ * Se reciben los parámetros enviados por la url para ser procesados y
+ * hacer los cambios necesarios como mandar a hacer el cambio de letra con 
+ * la función changeLetter y luego dependiendo de ciertas normas se renderiza
+ * el tablero de juego o las vistas de campeón o de perdedor respectivamente
+ */
+router.get('/game/:generatedWord/:letter/:hiddenWord/:playerLives', function (req, res, next) {
+  let resultChanges = changeLetter(req.params.generatedWord, req.params.letter, req.params.hiddenWord);
+  let playerLives = parseInt(req.params.playerLives);
 
-router.get('/game/:originalWord/:letter/:newWord/:lives', function (req, res, next) {
-  let resultChanges = changeLetter(req.params.originalWord, req.params.letter, req.params.newWord, parseInt(req.params.lives));
+  let wordResult = resultChanges.hiddenWord.replaceAll(' ', '');
 
-  let wordResult = resultChanges.newWord.replaceAll(' ', '');
-
-  if (wordResult === resultChanges.originalWord && resultChanges.lives > 0) {
+  if (wordResult === resultChanges.generatedWord && playerLives > 0) {
     res.render('winGame')
-  } else if (resultChanges.cont !== resultChanges.originalWord.length && resultChanges.lives > 0) {
-    res.render('game', { originalWord: resultChanges.originalWord, newWord: resultChanges.newWord, lives: resultChanges.lives })
-  } else if (resultChanges.cont === resultChanges.originalWord.length && resultChanges.lives > 0) {
-    resultChanges.lives--;
-    res.render('game', { originalWord: resultChanges.originalWord, newWord: resultChanges.newWord, lives: resultChanges.lives })
-  } else if (resultChanges.lives === 0) {
+  } else if (resultChanges.cont !== resultChanges.generatedWord.length && playerLives > 0) {
+    res.render('game', { generatedWord: resultChanges.generatedWord, hiddenWord: resultChanges.hiddenWord, playerLives: playerLives });
+  } else if (resultChanges.cont === resultChanges.generatedWord.length && playerLives > 0) {
+    playerLives--;
+    res.render('game', { generatedWord: resultChanges.generatedWord, hiddenWord: resultChanges.hiddenWord, playerLives: playerLives });
+  } else if (playerLives === 0) {
     res.render('loseGame')
   }
 });
