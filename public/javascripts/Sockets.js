@@ -11,7 +11,7 @@ socket.on('server:gameView', (html) => {
 const getResponse = (letter) => {
     socket.emit('client:getResponse', letter);
     socket.on('server:getResponse', (data) => {
-        updateHiddenWord(data);
+        updateGame(data);
     })
     socket.on('server:getWin', (html) => {
         winView(html);

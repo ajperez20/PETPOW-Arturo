@@ -10,8 +10,8 @@ const LoseView = (html) => {
     document.querySelector('body').innerHTML = html
 }
 
-const updateHiddenWord = (data) => {
-    document.querySelector('#hiddenWord').innerHTML = data.hiddenWord;
-    document.querySelector('#playerLives').innerHTML = "Vidas Disponibles: " + data.playerLives;
+const updateGame = (data) => {
+    document.querySelector('#hiddenWord').innerHTML = `<h1 id="hiddenWord">${data.hiddenWord}</h1>`;
+    document.querySelector('#playerLives').innerHTML = `<h3 class="mt-3 mb-2" id="playerLives">Vidas Disponibles: ${data.playerLives}</h3>`
     document.getElementById('letter').value = ""
 }

@@ -12,6 +12,7 @@ const res = require('express/lib/response');
 const { connect } = require('http2');
 var { data: data, getWord: getWord } = require('../public/javascripts/SeverFetch');
 var socketIo = require('socket.io');
+var { gameView, winGameView, loseGameView } = require('../public/javascripts/TemplateString');
 
 
 
@@ -28,83 +29,57 @@ app.set('port', port);
 var server = http.createServer(app);
 
 
+/**Backend del Juego */
+
 /**
  * Create Socket Io server
  */
+const serverBackend = new socketIo.Server(server);
+serverBackend.on('connection', (socket) => {
+
+  socket.on('client:getGameData', () => {
+    let html = gameStartView();
+    html.then(data => saveStartData(data.generatedWord, data.hiddenWord));
+    html.then(data => socket.emit('server:gameView', data.html));
+  })
+
+  socket.on('client:getResponse', (letter) => {
+    let data = getResponseAction(letter);
+    if (data.win === 1 && data.playerLives > 0) {
+      console.log("qlq")
+      socket.emit('server:getWin', winGameView());
+    } else if (data.win === 0 && data.playerLives === 0) {
+      socket.emit('server:getLose', loseGameView());
+    } else if (data.win === 0 && data.playerLives > 0) {
+      socket.emit('server:getResponse', data);
+    }
+  })
+})
+
+/**------------------------------- */
+
 
 var generatedWord = "";
 var hiddenWord = "";
-var playerLives = 5;
+var playerLives = 0;
 
-const renderGameStart = () => {
+const saveStartData = (g, h) => {
+  generatedWord = g;
+  hiddenWord = h;
+}
+
+const gameStartView = () => {
   playerLives = 5
   return getWord().then((data) => {
-    let hiddenWord = "_ ".repeat(data.word.length);
     console.log(data.word)
+    let hiddenWord = "_ ".repeat(data.word.length);
     return {
-      html: `
-    <section class="hero align-items-stretch">
-    <div class="d-flex flex-column justify-content-center align-items-center" id="playerLives">
-      <h3 class="mt-3 mb-2" id="playerLives">Vidas Disponibles: ${playerLives}</h3>
-    </div>
-    <div class="d-flex flex-column justify-content-center align-items-center mt-5">
-      <img src="/images/logoGame.png" width="300" heigth="100" alt="Algo">
-    </div>
-    <div class="d-flex flex-column justify-content-center align-items-center">
-      <div class="row align-items-center">
-        <div class="col" id="newWord">
-          <h1 id="hiddenWord">${hiddenWord}</h1>
-        </div>
-      </div>
-      <div class="row align-items-center">
-        <div class="col">
-          <form class="card card-body rounded-0 mt-5" style="Background-color: #0D462E" id="formData" onSubmit="return getDataFromView()">
-            <h1 class="h3 mb-3">Escribe una Letra</h1>
-            <input type="text" id="letter" name="letter" placeholder="Escribe una letra" class="form-control rounded-0 mb-3" autofocus autocomplete="off">
-            <button type="submit" class="btn btn-success">Enviar</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </section>
-`,
+      html: gameView(hiddenWord, playerLives),
       generatedWord: data.word,
       hiddenWord: hiddenWord.replaceAll(" ", "")
     }
   });
 }
-
-const winGameView = () => {
-  return `
-  <section class="hero align-items-stretch">
-    <div class="d-flex flex-column justify-content-center align-items-center mt-5">
-      <img src="/images/CupWin.svg" width="300" alt="Muerto">
-    </div>
-    <div class="d-flex flex-column justify-content-center align-items-center">
-      <h1>Has Ganado ¡huraaaaaaaaaaaaaaaaaaaaaaaaa!................</h1>
-      <p>¡Hey! ¿Quieres Intentarlo De Nuevo?</p>
-      <a class="btn btn-secondary btn-lg" href="/users/game" role="button">Volver A Jugar</a>
-    </div>
-  </section>
-  `;
-}
-
-const loseGameView = () => {
-  return `
-  <section class="hero align-items-stretch">
-    <div class="d-flex flex-column justify-content-center align-items-center mt-5">
-      <img src="/images/DeadLose.svg" width="300" alt="Muerto">
-    </div>
-    <div class="d-flex flex-column justify-content-center align-items-center">
-      <h1>Has Muerto................</h1>
-      <p>¡Hey! ¿Quieres Intentarlo De Nuevo?</p>
-      <a class="btn btn-secondary btn-lg" href="/users/game" role="button">Volver a Intentarlo</a>
-    </div>
-  </section>
-  `;
-}
-
-
 
 const getResponseAction = (letter) => {
   let gWord = generatedWord;
@@ -112,64 +87,31 @@ const getResponseAction = (letter) => {
   let cont = 0;
 
   gWord = gWord.split("");
-  hWord = hWord.split("")
+  hWord = hWord.split("");
 
   for (let l in gWord) {
     if (letter === gWord[l]) {
       hWord[l] = gWord[l];
-    }else{
+    } else {
       cont++
     }
   }
   for (let l in hWord) {
     hWord[l] += " "
   }
+
   hWord = hWord.toString().replaceAll(",", "")
   hiddenWord = hWord.replaceAll(" ", "")
+  playerLives -= cont === generatedWord.length ? 1 : 0;
 
-  if(cont === generatedWord.length){
-    playerLives--;
+  if (hiddenWord === generatedWord) {
+    return { playerLives: playerLives, win: 1 }
+  } else {
+    return { hiddenWord: hWord, playerLives: playerLives, win: 0 }
   }
-
-  if(hiddenWord === generatedWord){
-    console.log("hola")
-    return {playerLives: playerLives, win: 1}
-  }else{
-    return {hiddenWord: hWord, playerLives: playerLives, win: 0}
-  }
-
-  
 }
 
-
-const saveStartData = (g, h) => {
-  generatedWord = g;
-  hiddenWord = h;
-}
-//Server Socket.io
-const serverBackend = new socketIo.Server(server);
-serverBackend.on('connection', (socket) => {
-
-  socket.on('client:getGameData', () => {
-    let html = renderGameStart();
-    html.then(data => saveStartData(data.generatedWord, data.hiddenWord));
-    html.then(data => socket.emit('server:gameView', data.html));
-  })
-
-  socket.on('client:getResponse', (letter) => {
-    let data = getResponseAction(letter);
-    if(data.win === 1 && data.playerLives > 0){
-      console.log("qlq")
-      socket.emit('server:getWin', winGameView());
-    }else if(data.win === 0 && data.playerLives === 0){
-      socket.emit('server:getLose', loseGameView());
-    }else if(data.win === 0 && data.playerLives > 0){
-      socket.emit('server:getResponse', data);
-    }
-
-  })
-})
-
+/**----------------------------------------------------------- */
 /**
  * Listen on provided port, on all network interfaces.
  */
