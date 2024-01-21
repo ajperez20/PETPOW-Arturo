@@ -8,23 +8,19 @@
  * submit().
  */
 
-const gameForm = document.querySelector('#formData');
-const gameInput = document.querySelector('#letter');
 
-function sendData(generatedWord, hiddenWord, playerLives) {
+function getDataFromView() {
+    let letter = document.getElementById('letter').value;
+    if (letter != "") {
+        getResponse(letter);
+    } else {
+        alert("Introduce una Letra");
+    }
 
-    gameForm.addEventListener('submit', e => {
-        let letter = gameInput.value;
-        e.preventDefault();
-        if (letter != "") {
-            let url = "/users/game/" + generatedWord + "/" + letter + "/" + hiddenWord + "/" + playerLives;
-            gameForm.setAttribute('action', url);
-            gameForm.submit();
-        } else {
-            alert("Introduce una Letra");
-        }
-    })
+    return (false);
 }
+
+
 
 
 

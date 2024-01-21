@@ -1,17 +1,26 @@
-
-
 const socket = io();
 
-const dataGame = (oriW, newW, lives, letter) => {
-    socket.emit('client:newWord', {
-        originalW: oriW,
-        newW: newW,
-        lives: lives,
-        letter: letter
-    })
-};
+//Esto solo sucede cuando se hace la primera entrada al juego o sea start
 
-socket.on('server:newWord', (word) => {
-    console.log(word.newWord);
+
+socket.emit('client:getGameData');
+socket.on('server:gameView', (html) => {
+    gameView(html);
 })
+
+const getResponse = (letter) => {
+    socket.emit('client:getResponse', letter);
+    socket.on('server:getResponse', (data) => {
+        updateHiddenWord(data);
+    })
+    socket.on('server:getWin', (html) => {
+        winView(html);
+    })
+
+    socket.on('server:getLose', (html) => {
+        LoseView(html);
+    })
+}
+
+
 

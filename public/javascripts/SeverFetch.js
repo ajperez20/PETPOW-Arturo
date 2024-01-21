@@ -14,13 +14,8 @@ const getWord = () =>{
         url: 'https://pow-3bae6d63ret5.deno.dev/word',
     }).then((response)=>response.data);
 }
-const data = async () => {
-    const data = fetch('', { method: "GET" })
-    const word =  await data.then(response => {return response.json()});
-    return word;
-};
 
-module.exports = {data, getWord};
+module.exports = {getWord};
 
 
 
