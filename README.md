@@ -37,6 +37,10 @@ Para correr el juego usa el siguiente comando:
  http://localhost:3000/
 ```  
 
+## Datos Extras
+1. Para ver la configuración hay que entrar en la carperta bin y al archivo www que tiene toda la configación del servidor del juego.
+2. Para ver las dependecias instaladas hay que entrar en el package.json del juego.
+3. Las capetas view, routes, public contienen las vistas, lógica y rutas existentes en el juego.
 
 
 
