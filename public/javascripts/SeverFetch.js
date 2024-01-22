@@ -1,12 +1,4 @@
 const axios = require('axios');
-const { response } = require('../../app');
-/**
- * SeverFetch.js =>>>>
- * 
- * const data: función que retorna un objeto promesa al conectarse a la api de palabras
- * por medio de fetch haciendo una solicitud http.
- * 
- */
 
 const getWord = () =>{
     return axios({

@@ -1,8 +1,5 @@
 const socket = io();
 
-//Esto solo sucede cuando se hace la primera entrada al juego o sea start
-
-
 socket.emit('client:getGameData');
 socket.on('server:gameView', (html) => {
     gameView(html);

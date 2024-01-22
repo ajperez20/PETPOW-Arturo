@@ -44,14 +44,15 @@ const winGameView = () => {
     `;
 }
 
-const loseGameView = () => {
+const loseGameView = (generatedWord) => {
     return `
     <section class="hero align-items-stretch">
       <div class="d-flex flex-column justify-content-center align-items-center mt-5">
         <img src="/images/DeadLose.svg" width="300" alt="Muerto">
       </div>
       <div class="d-flex flex-column justify-content-center align-items-center">
-        <h1>Has Muerto................</h1>
+        <h1>La Palabra Era: ${generatedWord}</h1>
+        <h3>Has Muerto................</h3>
         <p>¡Hey! ¿Quieres Intentarlo De Nuevo?</p>
         <a class="btn btn-secondary btn-lg" href="/users/game" role="button">Volver a Intentarlo</a>
       </div>

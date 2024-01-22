@@ -29,7 +29,7 @@ app.set('port', port);
 var server = http.createServer(app);
 
 
-/**Backend del Juego */
+/**Backend Game */
 
 /**
  * Create Socket Io server
@@ -46,10 +46,9 @@ serverBackend.on('connection', (socket) => {
   socket.on('client:getResponse', (letter) => {
     let data = getResponseAction(letter);
     if (data.win === 1 && data.playerLives > 0) {
-      console.log("qlq")
       socket.emit('server:getWin', winGameView());
     } else if (data.win === 0 && data.playerLives === 0) {
-      socket.emit('server:getLose', loseGameView());
+      socket.emit('server:getLose', loseGameView(generatedWord));
     } else if (data.win === 0 && data.playerLives > 0) {
       socket.emit('server:getResponse', data);
     }
@@ -71,7 +70,6 @@ const saveStartData = (g, h) => {
 const gameStartView = () => {
   playerLives = 5
   return getWord().then((data) => {
-    console.log(data.word)
     let hiddenWord = "_ ".repeat(data.word.length);
     return {
       html: gameView(hiddenWord, playerLives),
