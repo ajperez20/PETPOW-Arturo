@@ -11,15 +11,40 @@ Para jugar en modo multijugador, se necesita, al menos, tres jugadores: un anfit
 PETPOW-Arturo es un proyecto que busca simular un juego del ahorcado(hangman), este fue hecho usando Node [Node Documentation](https://nodejs.org/docs/latest/api/) como motor de ejecución de javascript y Express [Express Documentation](https://expressjs.com/) como framework de desarrollo.
 
 ## Instalación
-Para instalar PETPOW-Arturo usa los siguientes comandos.
+Para instalar PETPOW-Arturo usa los siguientes comandos:
 
+1. Instalar Node:
+   [Install Node](https://nodejs.org/en)
+   
+2. Clonar el repositorio:
 ```console
-
+  git clone https://github.com/ajperez20/PETPOW-Arturo.git
+```  
+3. Instalar dependencias:
+```console
+  npm install
 ```
 
-```console
+## Correr Juego
+Para correr el juego usa el siguiente comando:
 
+1. Correr juego:
+```console
+  npm start
 ```
+2. Navegador:
+```console
+ http://localhost:3000/
+```  
+
+
+
+
+
+
+
+
+
 
 
 
